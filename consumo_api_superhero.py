@@ -1,40 +1,37 @@
 import urllib.request
-import json
-import math
+from json import loads
+from math import ceil
 
 url = 'https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/all.json'
 webpage = urllib.request.urlopen(url).read().decode()
-js = json.loads(webpage)
+js = loads(webpage)
 print(f'Existem {len(js)} personagens')
+
+def listar_biografia(person):
+    print(f'|Personagem: {person["name"]}|')
+    print('-'*90)
+    print(f'|   Biografia---------')
+    print(f'|    Nome Completo:', person['biography']['fullName'])
+    print(f'|    Apelido(s):', ', '.join(person['biography']['aliases']))
+    print('-'*90)
+    print(f'|   Estatística de Potência:')
 
 def listar_poderes(lista):
     for chave in lista:
         barra = "▒"
-        valores = math.ceil(lista.get(chave) // 2) + 1
+        valores = ceil(lista.get(chave) // 2) + 1
         print(f'|    {chave:>12}: {valores:^5}{barra*valores:12}')
 
 def mostrar_todos():
     for personagem in js:
-        print(f'|Personagem: {personagem["name"]}|')
-        print('-'*90)
-        print(f'|   Biografia:')
-        print(f'|    Nome Completo:', personagem['biography']['fullName'])
-        print(f'|    Apelido(s):', ', '.join(personagem['biography']['aliases']))
-        print('-'*90)
-        print(f'|   Estatística de Potência:')
+        listar_biografia(personagem)
         listar_poderes(personagem['powerstats'])
         print('-'*90)
 
 def mostrar_n_personagens():
     quantidade = int(input('Quantos heróis deseja ver?'))
     for qtd in range(quantidade):
-        print(f'|Personagem: {js[qtd].get("name")}|')
-        print('-'*90)
-        print(f'|   Biografia:')
-        print(f'|    Nome Completo:', js[qtd]['biography']['fullName'])
-        print(f'|    Apelido(s):', ', '.join(js[qtd]['biography']['aliases']))
-        print('-'*90)
-        print(f'|   Estatística de Potência:')
+        listar_biografia(js[qtd])
         listar_poderes(js[qtd]['powerstats'])
         print('-'*90)
 
@@ -44,13 +41,7 @@ def pesquisar():
         if pesquisa_personagem.lower() not in personagem.get('name').lower():
             continue
         elif pesquisa_personagem.lower() in personagem.get('name').lower():
-            print(f'|Personagem: {personagem["name"]}|')
-            print('-'*90)
-            print(f'|   Biografia:')
-            print(f'|    Nome Completo:', personagem['biography']['fullName'])
-            print(f'|    Apelido(s):', ', '.join(personagem['biography']['aliases']))
-            print('-'*90)
-            print(f'|   Estatística de Potência:')
+            listar_biografia(personagem)
             listar_poderes(personagem['powerstats'])
             print('-'*90)
 
