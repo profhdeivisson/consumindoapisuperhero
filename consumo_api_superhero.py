@@ -1,9 +1,17 @@
-import urllib.request, json, math
+import urllib.request
+import json
+import math
 
 url = 'https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/all.json'
 webpage = urllib.request.urlopen(url).read().decode()
 js = json.loads(webpage)
 print(f'Existem {len(js)} personagens')
+
+def listar_poderes(lista):
+    for chave in lista:
+        barra = "▒"
+        valores = math.ceil(lista.get(chave) // 2) + 1
+        print(f'|    {chave:>12}: {valores:^5}{barra*valores:12}')
 
 def mostrar_todos():
     for personagem in js:
@@ -14,11 +22,7 @@ def mostrar_todos():
         print(f'|    Apelido(s):', ', '.join(personagem['biography']['aliases']))
         print('-'*90)
         print(f'|   Estatística de Potência:')
-        
-        for power in personagem['powerstats']:
-            barra = "▒"
-            valores = math.ceil(personagem['powerstats'][power] // 2) + 1
-            print(f'|    {power:>12}: {valores:^5}{barra*valores:12}')
+        listar_poderes(personagem['powerstats'])
         print('-'*90)
 
 def mostrar_n_personagens():
@@ -31,11 +35,7 @@ def mostrar_n_personagens():
         print(f'|    Apelido(s):', ', '.join(js[qtd]['biography']['aliases']))
         print('-'*90)
         print(f'|   Estatística de Potência:')
-        
-        for power in js[qtd]['powerstats']:
-            barra = "▒"
-            valores = math.ceil(js[qtd]['powerstats'][power] // 2) + 1
-            print(f'|    {power:>12}: {valores:^5}{barra*valores:12}')
+        listar_poderes(js[qtd]['powerstats'])
         print('-'*90)
 
 def pesquisar():
@@ -51,11 +51,7 @@ def pesquisar():
             print(f'|    Apelido(s):', ', '.join(personagem['biography']['aliases']))
             print('-'*90)
             print(f'|   Estatística de Potência:')
-            
-            for power in personagem['powerstats']:
-                barra = "▒"
-                valores = math.ceil(personagem['powerstats'][power] // 2) + 1
-                print(f'|    {power:>12}: {valores:^5}{barra*valores:12}')
+            listar_poderes(personagem['powerstats'])
             print('-'*90)
 
 while True:
@@ -68,15 +64,16 @@ while True:
     if not numero.isnumeric():
         print("Digite apenas números!")
     else:
-        if numero == str(1) or numero == str(2) or numero == str(3) or numero == str(4):
-            if numero == str(1):
+        numero = int(numero)
+        if numero in range(1, 5):
+            if numero == 1:
                 mostrar_todos()
-            elif numero == str(2):
+            if numero == 2:
                 pesquisar()
-            elif numero == str(3):
+            if numero == 3:
                 mostrar_n_personagens()
-            else:
-                print("Saindo...")
+            if numero == 4:
+                print('Saindo...')
                 break
         else:
             print("Valor digitado, inválido!")
